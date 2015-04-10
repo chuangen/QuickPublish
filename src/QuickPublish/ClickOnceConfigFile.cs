@@ -14,6 +14,9 @@ namespace QuickPublish
     public class ClickOnceConfigFile : ProjectDocument
     {
         protected readonly PublishSettings pubSettings = new PublishSettings();
+        protected List<XmlNode> importNodes = new List<XmlNode>();
+        protected readonly PostBuildEventGroup groupPostBuildEvent = new PostBuildEventGroup();
+        protected readonly SignToolCommandGroup groupSignToolCommand = new SignToolCommandGroup();
         public PublishSettings Settings
         {
             get { return pubSettings; }
@@ -23,12 +26,20 @@ namespace QuickPublish
         {
         }
 
+        enum PropertyGroupType
+        {
+            Normal,
+            PublishSettings,
+            PostBuildEvent,
+            SignToolCommand,
+        }
         public override void ReadXml(string fileName)
         {
             base.FileName = Path.GetFullPath(fileName);
 
             properties.Clear();
             items.Clear();
+            importNodes.Clear();
             others.Clear();
 
             string basePath = Path.GetDirectoryName(this.FileName);
@@ -49,22 +60,46 @@ namespace QuickPublish
                             pubSettings.FromXml((XmlElement)node, basePath);
                             break;
                         case "PropertyGroup":
-                            bool isPublishSettings = false;
+                            PropertyGroupType type = PropertyGroupType.Normal;
                             foreach(XmlElement elem in node.ChildNodes)
                             {
                                 if(elem.Name == "DistributionPath")
                                 {
-                                    isPublishSettings = true;
+                                    type = PropertyGroupType.PublishSettings;
+                                    break;
+                                }
+                                if (elem.Name == "PostBuildEvent")
+                                {
+                                    type = PropertyGroupType.PostBuildEvent;
+                                    break;
+                                }
+                                if (elem.Name == "SignToolCommand")
+                                {
+                                    type = PropertyGroupType.SignToolCommand;
                                     break;
                                 }
                             }
-                            if (isPublishSettings)
-                                pubSettings.FromXml((XmlElement)node, basePath);
-                            else
-                                properties.AddGroup((XmlElement)node, basePath);
+                            switch(type)
+                            {
+                                case PropertyGroupType.Normal:
+                                    properties.AddGroup((XmlElement)node, basePath);
+                                    break;
+                                case PropertyGroupType.PublishSettings:
+                                    pubSettings.FromXml((XmlElement)node, basePath);
+                                    break;
+                                case PropertyGroupType.PostBuildEvent:
+                                    groupPostBuildEvent.FromXml((XmlElement)node, basePath);
+                                    break;
+                                case PropertyGroupType.SignToolCommand:
+                                    groupSignToolCommand.FromXml((XmlElement)node, basePath);
+                                    break;
+                            }
                             break;
                         case "ItemGroup":
                             items.AddGroup((XmlElement)node, basePath);
+                            break;
+                        case "Import":
+                            importNodes.Add(node.CloneNode(true));
                             break;
                         default:
                             others.Add(node.CloneNode(true));
@@ -100,6 +135,13 @@ namespace QuickPublish
             nodeProject.AppendChild(pubSettings.ToXml(xmldoc, basePath));
             // ItemGroup 组
             items.SaveToXml(nodeProject, basePath);
+            // Import 节点
+            foreach (XmlNode node in importNodes)
+                nodeProject.AppendChild(xmldoc.ImportNode(node, true));
+            // PostBuildEvent
+            nodeProject.AppendChild(groupPostBuildEvent.ToXml(xmldoc, basePath));
+            // SignToolCommand
+            nodeProject.AppendChild(groupSignToolCommand.ToXml(xmldoc, basePath));
             // 其他未知节点
             foreach (XmlNode node in others)
                 nodeProject.AppendChild(xmldoc.ImportNode(node, true));

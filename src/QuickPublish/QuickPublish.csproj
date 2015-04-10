@@ -111,6 +111,7 @@
     <Compile Include="PasswordForm.Designer.cs">
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SignToolCommandGroup.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectDocument.cs" />
     <Compile Include="ProjectDocument.Property.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="PublishOptionsForm.Designer.cs">
       <DependentUpon>PublishOptionsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PostBuildEventGroup.cs" />
     <Compile Include="PublishSettings.cs" />
     <Compile Include="ref\EnumHelper.cs">
       <SubType>Code</SubType>
