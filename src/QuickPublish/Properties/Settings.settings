@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="QuickPublish.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="VisualStudioVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="VisualStudioPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\Microsoft Visual Studio 9.0\</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
