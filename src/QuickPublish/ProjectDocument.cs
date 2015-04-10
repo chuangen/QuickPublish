@@ -7,7 +7,7 @@ using QuickPublish.CsProject;
 
 namespace QuickPublish
 {
-    public partial class ProjectDocument
+    public partial class ProjectDocument : IDisposable
     {
         /// <summary>
         /// PropertyGroup
@@ -54,17 +54,24 @@ namespace QuickPublish
 
             foreach (XmlNode node in nodeProject.ChildNodes)
             {
-                switch (node.Name)
+                try
                 {
-                    case "PropertyGroup":
-                        properties.AddGroup((XmlElement)node, basePath);
-                        break;
-                    case "ItemGroup":
-                        items.AddGroup((XmlElement)node, basePath);
-                        break;
-                    default:
-                        others.Add(node.CloneNode(true));
-                        break;
+                    switch (node.Name)
+                    {
+                        case "PropertyGroup":
+                            properties.AddGroup((XmlElement)node, basePath);
+                            break;
+                        case "ItemGroup":
+                            items.AddGroup((XmlElement)node, basePath);
+                            break;
+                        default:
+                            others.Add(node.CloneNode(true));
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //
                 }
             }
         }
@@ -73,6 +80,10 @@ namespace QuickPublish
         /// </summary>
         /// <param name="fileName">要向其写入 XML 数据的文件。</param>
         public virtual void WriteXml(string fileName)
+        {
+            this.WriteXml(fileName, "4.0");
+        }
+        public virtual void WriteXml(string fileName, string ToolsVersion)
         {
             string fullName = Path.GetFullPath(fileName);
             string basePath = Path.GetDirectoryName(fullName);
@@ -84,7 +95,7 @@ namespace QuickPublish
             xmldoc.AppendChild(xmldecl);
             //<Project 节点
             XmlElement elem = xmldoc.CreateElement("Project", Consts.NamesapceURI);
-            elem.SetAttribute("ToolsVersion", "3.5");
+            elem.SetAttribute("ToolsVersion", ToolsVersion);
             elem.SetAttribute("DefaultTargets", "Build");
             elem.SetAttribute("xmlns", Consts.NamesapceURI);
             xmldoc.AppendChild(elem);
@@ -100,5 +111,14 @@ namespace QuickPublish
 
             xmldoc.Save(fileName);
         }
+
+        #region IDisposable 成员
+
+        public void Dispose()
+        {
+            //
+        }
+
+        #endregion
     }
 }

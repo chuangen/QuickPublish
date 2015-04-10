@@ -9,9 +9,10 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>QuickPublish</RootNamespace>
-    <AssemblyName>QPublish</AssemblyName>
+    <AssemblyName>QuickPublish</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -40,6 +41,9 @@
     <AssemblyOriginatorKeyFile>cert.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Sense.Utils">
+      <HintPath>..\References\Sense.Utils.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -88,6 +92,7 @@
     <Compile Include="CsProject\PropertyGroup.cs" />
     <Compile Include="CsProject\PublishFileItem.cs" />
     <Compile Include="CsProject\ReferenceItem.cs" />
+    <Compile Include="CsProject\ProjectReferenceItem.cs" />
     <Compile Include="FilesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,13 +167,13 @@
     <EmbeddedResource Include="PublishOptionsForm.resx">
       <DependentUpon>PublishOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="app.config" />
     <Content Include="keys\loader.snk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="keys\ManifestKey.pfx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="app.config" />
     <None Include="cert.snk" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

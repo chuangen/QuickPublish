@@ -19,7 +19,7 @@ namespace QuickPublish.CsProject
             if (this.FullName.StartsWith(Properties.Settings.Default.TemplatePath, StringComparison.OrdinalIgnoreCase))
                 return this.FullName;
 
-            return Common.GetRelativePath(basePath, this.FullName);
+            return Sense.Utils.IO.Path.GetRelativePath(basePath, this.FullName);
         }
         public string Link { get; set; }
         /// <summary>
@@ -36,17 +36,32 @@ namespace QuickPublish.CsProject
 
             return true;
         }
-        internal FileItem()
-        { }
-        public FileItem(string basePath, string include, string link)
+        protected readonly string TagName;
+        protected FileItem(string tagName)
         {
-            this.FullName = Common.GetAbsolutePath(basePath, include);
+            this.TagName = tagName;
+        }
+        public FileItem(string tagName, string basePath, string include, string link)
+            : this(tagName)
+        {
+            this.FullName = Sense.Utils.IO.Path.GetAbsolutePath(basePath, include);
             if (string.IsNullOrEmpty(link))
-                this.Link = Common.GetRelativePath(basePath, this.FullName);
+                this.Link = Sense.Utils.IO.Path.GetRelativePath(basePath, this.FullName);
             else
                 this.Link = link;
         }
+        public override XmlElement ToXml(XmlDocument xmldoc, string basePath)
+        {
+            XmlElement result = xmldoc.CreateElement(this.TagName, Consts.NamesapceURI);
 
+            string include = this.GetInclude(basePath);
+            result.SetAttribute("Include", include);
+
+            if (this.NeedLinkNode(basePath)) //需要添加 Link 节点
+                append(result, "Link", this.Link);
+
+            return result;
+        }
         internal override void FromXmlInternal(XmlElement elem, XmlNamespaceManager nsmgr, string basePath)
         {
             string include = elem.GetAttribute("Include");
@@ -54,9 +69,9 @@ namespace QuickPublish.CsProject
             selectedNode = elem.SelectSingleNode("k:Link", nsmgr);
             string link = (selectedNode == null) ? "" : selectedNode.InnerText;
 
-            this.FullName = Common.GetAbsolutePath(basePath, include);
+            this.FullName = Sense.Utils.IO.Path.GetAbsolutePath(basePath, include);
             if (string.IsNullOrEmpty(link))
-                this.Link = Common.GetRelativePath(basePath, this.FullName);
+                this.Link = Sense.Utils.IO.Path.GetRelativePath(basePath, this.FullName);
             else
                 this.Link = link;
         }
@@ -64,52 +79,42 @@ namespace QuickPublish.CsProject
     public class NoneItem : FileItem
     {
         internal NoneItem()
+            : base("None")
         { }
         public NoneItem(string basePath, string include, string link)
-            : base(basePath, include, link)
+            : base("None", basePath, include, link)
         { }
-
-        public override XmlElement ToXml(XmlDocument xmldoc, string basePath)
-        {
-            XmlElement result = xmldoc.CreateElement("None", Consts.NamesapceURI);
-
-            string include = this.GetInclude(basePath);
-            result.SetAttribute("Include", include);
-
-            if (this.NeedLinkNode(basePath))
-            {//需要添加 Link 节点
-                XmlElement elemLink = xmldoc.CreateElement("Link", Consts.NamesapceURI);
-                elemLink.InnerText = this.Link;
-                result.AppendChild(elemLink);
-            }
-
-            return result;
-        }
     }
 
     public class CompileItem : FileItem
     {
+        public string SubType { get; set; }
+
         internal CompileItem()
+            : base("Compile")
         { }
         public CompileItem(string basePath, string include, string link)
-            : base(basePath, include, link)
+            : base("Compile", basePath, include, link)
         { }
-
         public override XmlElement ToXml(XmlDocument xmldoc, string basePath)
         {
-            XmlElement result = xmldoc.CreateElement("Compile", Consts.NamesapceURI);
+            XmlElement result = base.ToXml(xmldoc, basePath);
 
-            string include = this.GetInclude(basePath);
-            result.SetAttribute("Include", include);
-
-            if (this.NeedLinkNode(basePath))
-            {//需要添加 Link 节点
-                XmlElement elemLink = xmldoc.CreateElement("Link", Consts.NamesapceURI);
-                elemLink.InnerText = this.Link;
-                result.AppendChild(elemLink);
+            if (!string.IsNullOrEmpty(this.SubType))
+            {
+                XmlElement elemSubType = xmldoc.CreateElement("SubType", Consts.NamesapceURI);
+                elemSubType.InnerText = this.SubType;
+                result.AppendChild(elemSubType);
             }
-
             return result;
+        }
+        internal override void FromXmlInternal(XmlElement elem, XmlNamespaceManager nsmgr, string basePath)
+        {
+            base.FromXmlInternal(elem, nsmgr, basePath);
+
+            XmlNode selectedNode;
+            selectedNode = elem.SelectSingleNode("k:SubType", nsmgr);
+            this.SubType = (selectedNode == null) ? "" : selectedNode.InnerText;
         }
     }
     public class ContentItem : FileItem
@@ -117,27 +122,18 @@ namespace QuickPublish.CsProject
         public string CopyToOutputDirectory { get; set; }
 
         internal ContentItem()
+            : base("Content")
         { }
         public ContentItem(string basePath, string include, string link)
-            : base(basePath, include, link)
+            : base("Content", basePath, include, link)
         { }
         public override XmlElement ToXml(XmlDocument xmldoc, string basePath)
         {
-            XmlElement result = xmldoc.CreateElement("Content", Consts.NamesapceURI);
-
-            string include = this.GetInclude(basePath);
-            result.SetAttribute("Include", include);
+            XmlElement result = base.ToXml(xmldoc, basePath);
 
             XmlElement elemCopyToOutputDirectory = xmldoc.CreateElement("CopyToOutputDirectory", Consts.NamesapceURI);
             elemCopyToOutputDirectory.InnerText = this.CopyToOutputDirectory;
             result.AppendChild(elemCopyToOutputDirectory);
-
-            if (this.NeedLinkNode(basePath))
-            {//需要添加 Link 节点
-                XmlElement elemLink = xmldoc.CreateElement("Link", Consts.NamesapceURI);
-                elemLink.InnerText = this.Link;
-                result.AppendChild(elemLink);
-            }
 
             return result;
         }
@@ -148,6 +144,34 @@ namespace QuickPublish.CsProject
             XmlNode selectedNode;
             selectedNode = elem.SelectSingleNode("k:CopyToOutputDirectory", nsmgr);
             this.CopyToOutputDirectory = (selectedNode == null) ? "" : selectedNode.InnerText;
+        }
+    }
+    
+    public class EmbeddedResourceItem : FileItem
+    {
+        public string DependentUpon { get; set; }
+
+        internal EmbeddedResourceItem()
+            : base("EmbeddedResource")
+        { }
+        public EmbeddedResourceItem(string basePath, string include, string link)
+            : base("EmbeddedResource", basePath, include, link)
+        { }
+        public override XmlElement ToXml(XmlDocument xmldoc, string basePath)
+        {
+            XmlElement result = base.ToXml(xmldoc, basePath);
+
+            if(!string.IsNullOrEmpty(this.DependentUpon))
+                append(result, "DependentUpon", this.DependentUpon);
+            return result;
+        }
+        internal override void FromXmlInternal(XmlElement elem, XmlNamespaceManager nsmgr, string basePath)
+        {
+            base.FromXmlInternal(elem, nsmgr, basePath);
+
+            XmlNode selectedNode;
+            selectedNode = elem.SelectSingleNode("k:DependentUpon", nsmgr);
+            this.DependentUpon = (selectedNode == null) ? "" : selectedNode.InnerText;
         }
     }
 }

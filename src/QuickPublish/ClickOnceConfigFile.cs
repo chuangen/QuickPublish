@@ -13,14 +13,15 @@ namespace QuickPublish
     /// </summary>
     public class ClickOnceConfigFile : ProjectDocument
     {
-        protected PublishSettings pubSettings = new PublishSettings();
+        protected readonly PublishSettings pubSettings = new PublishSettings();
         public PublishSettings Settings
         {
             get { return pubSettings; }
         }
         public ClickOnceConfigFile(string fileName)
             : base(fileName)
-        { }
+        {
+        }
 
         public override void ReadXml(string fileName)
         {
@@ -40,20 +41,39 @@ namespace QuickPublish
 
             foreach (XmlNode node in nodeProject.ChildNodes)
             {
-                switch (node.Name)
+                try
                 {
-                    case "PublishSettings":
-                        pubSettings.FromXml((XmlElement)node, basePath);
-                        break;
-                    case "PropertyGroup":
-                        properties.AddGroup((XmlElement)node, basePath);
-                        break;
-                    case "ItemGroup":
-                        items.AddGroup((XmlElement)node, basePath);
-                        break;
-                    default:
-                        others.Add(node.CloneNode(true));
-                        break;
+                    switch (node.Name)
+                    {
+                        case "PublishSettings":
+                            pubSettings.FromXml((XmlElement)node, basePath);
+                            break;
+                        case "PropertyGroup":
+                            bool isPublishSettings = false;
+                            foreach(XmlElement elem in node.ChildNodes)
+                            {
+                                if(elem.Name == "DistributionPath")
+                                {
+                                    isPublishSettings = true;
+                                    break;
+                                }
+                            }
+                            if (isPublishSettings)
+                                pubSettings.FromXml((XmlElement)node, basePath);
+                            else
+                                properties.AddGroup((XmlElement)node, basePath);
+                            break;
+                        case "ItemGroup":
+                            items.AddGroup((XmlElement)node, basePath);
+                            break;
+                        default:
+                            others.Add(node.CloneNode(true));
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //
                 }
             }
         }
@@ -68,16 +88,16 @@ namespace QuickPublish
             xmldoc.AppendChild(xmldecl);
             //<Project 节点
             XmlElement elem = xmldoc.CreateElement("Project", Consts.NamesapceURI);
-            elem.SetAttribute("ToolsVersion", "3.5");
+            elem.SetAttribute("ToolsVersion", "4.0");
             elem.SetAttribute("DefaultTargets", "Build");
             elem.SetAttribute("xmlns", Consts.NamesapceURI);
             xmldoc.AppendChild(elem);
 
             XmlElement nodeProject = xmldoc.DocumentElement;
-            // PublishSettings
-            nodeProject.AppendChild(pubSettings.ToXml(xmldoc, basePath));
             // PropertyGroup 组
             properties.SaveToXml(nodeProject, basePath);
+            // PublishSettings
+            nodeProject.AppendChild(pubSettings.ToXml(xmldoc, basePath));
             // ItemGroup 组
             items.SaveToXml(nodeProject, basePath);
             // 其他未知节点
@@ -89,12 +109,19 @@ namespace QuickPublish
 
         public static ClickOnceConfigFile NewDocument(string fileName)
         {
-            string templatePath = Properties.Settings.Default.TemplatePath;
-            ClickOnceConfigFile document = new ClickOnceConfigFile(Path.Combine(templatePath, "loader.csproj"));
-            CsProject.PropertyCollection properties = document.PropertyItems;
+            try
+            {
+                string templatePath = Properties.Settings.Default.TemplatePath;
+                ClickOnceConfigFile document = new ClickOnceConfigFile(Path.Combine(templatePath, "loader.csproj"));
+                CsProject.PropertyCollection properties = document.PropertyItems;
 
-            properties.ProjectGuid = Guid.NewGuid().ToString("B").ToUpper();
-            document.WriteXml(fileName);
+                properties.ProjectGuid = Guid.NewGuid().ToString("B").ToUpper();
+                document.WriteXml(fileName);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
             return new ClickOnceConfigFile(fileName);
         }
@@ -127,8 +154,8 @@ namespace QuickPublish
                 string fullName = Path.GetFullPath(file);
                 if (!itemGroupContents.ContainsKey(fullName))
                 {
-                    string include = Common.GetRelativePath(basePath, fullName);
-                    string link = Common.GetRelativePath(distPath, fullName);
+                    string include = Sense.Utils.IO.Path.GetRelativePath(basePath, fullName);
+                    string link = Sense.Utils.IO.Path.GetRelativePath(distPath, fullName);
                     ContentItem item = new ContentItem(basePath, include, link);
                     item.CopyToOutputDirectory = "PreserveNewest";
                     itemGroupContents.Add(item);

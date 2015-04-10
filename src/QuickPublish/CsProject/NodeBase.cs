@@ -30,6 +30,8 @@ namespace QuickPublish.CsProject
                 case "Reference": item = new ReferenceItem(); break;
                 case "BootstrapperPackage": item = new BootstrapperPackageItem(); break;
                 case "Compile": item = new CompileItem(); break;
+                case "EmbeddedResource": item = new EmbeddedResourceItem(); break;
+                case "ProjectReference": item = new ProjectReferenceItem(); break;
                 case "None": item = new NoneItem(); break;
                 case "Content": item = new ContentItem(); break;
                 case "PublishFile": item = new PublishFileItem(); break;

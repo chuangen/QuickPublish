@@ -314,9 +314,9 @@ namespace QuickPublish
 
                 //引导程序集
                 txtAssemblyName.Text = properties.AssemblyName;
-                txtAssemblyOriginatorKeyFile.Text = Common.GetAbsolutePath(basePath, properties.AssemblyOriginatorKeyFile);
+                txtAssemblyOriginatorKeyFile.Text = string.IsNullOrEmpty(properties.AssemblyOriginatorKeyFile) ? "" : Sense.Utils.IO.Path.GetAbsolutePath(basePath, properties.AssemblyOriginatorKeyFile);
                 txtManifestCertificateThumbprint.Text = properties.ManifestCertificateThumbprint;
-                txtManifestKeyFile.Text = Common.GetAbsolutePath(basePath, properties.ManifestKeyFile);
+                txtManifestKeyFile.Text = string.IsNullOrEmpty(properties.ManifestKeyFile) ? "" : Sense.Utils.IO.Path.GetAbsolutePath(basePath, properties.ManifestKeyFile);
 
                 //发布选项
                 txtPublishUrl.Text = properties.PublishUrl;

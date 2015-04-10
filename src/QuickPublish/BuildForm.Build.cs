@@ -35,7 +35,7 @@ namespace QuickPublish
             string appPublish = Path.Combine(projectPath, @"bin\Release\app.publish");
             if (Directory.Exists(appPublish))
             {
-                CopyDirectory(appPublish, publishPath);
+                Common.MoveDirectory(appPublish, publishPath, null);
             }
 
             bw.ReportProgress(5, string.Format("清理临时目录{0}...", publishPath));
@@ -44,29 +44,6 @@ namespace QuickPublish
             bw.ReportProgress(100, "操作完成。");
         }
 
-        static void CopyDirectory(string srcPath, string destPath)
-        {
-            if (!Directory.Exists(destPath))
-                Directory.CreateDirectory(destPath);
-
-            foreach (string srcFile in Directory.GetFiles(srcPath))
-            {
-                string destFile = Path.Combine(destPath, Path.GetFileName(srcFile));
-                string parentFolder = Path.GetDirectoryName(destFile);
-                if (!Directory.Exists(parentFolder))
-                    Directory.CreateDirectory(parentFolder);
-
-                File.Copy(srcFile, destFile, true);
-            }
-            foreach (string folder in Directory.GetDirectories(srcPath))
-            {
-                if (Path.GetFileName(folder).Trim().ToLower() == ".svn")
-                    continue;
-
-                string destFolder = Path.Combine(destPath, Path.GetFileName(folder));
-                CopyDirectory(folder, destFolder);
-            }
-        }
         /// <summary>
         /// 
         /// </summary>

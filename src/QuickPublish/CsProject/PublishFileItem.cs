@@ -42,9 +42,10 @@ namespace QuickPublish.CsProject
         public string FileType {get; set;}
 
         internal PublishFileItem()
+            : base("PublishFile")
         { }
         public PublishFileItem(string basePath, string include)
-            : base(basePath, include, "")
+            : base("PublishFile", basePath, include, "")
         {
             this.Visible = false;
             this.Group = "";
@@ -70,7 +71,7 @@ namespace QuickPublish.CsProject
         }
         public override XmlElement ToXml(XmlDocument xmldoc, string basePath)
         {
-            string include = Common.GetRelativePath(basePath, this.FullName);
+            string include = Sense.Utils.IO.Path.GetRelativePath(basePath, this.FullName);
             XmlElement result = xmldoc.CreateElement("PublishFile", Consts.NamesapceURI);
             result.SetAttribute("Include", include);
 

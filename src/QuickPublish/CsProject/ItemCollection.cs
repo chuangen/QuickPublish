@@ -16,6 +16,8 @@ namespace QuickPublish.CsProject
             dicGroups.Add("Reference", new ItemGroup());
             dicGroups.Add("BootstrapperPackage", new ItemGroup());
             dicGroups.Add("Compile", new ItemGroup());
+            dicGroups.Add("EmbeddedResource", new ItemGroup());
+            dicGroups.Add("ProjectReference", new ItemGroup());
             dicGroups.Add("None", new ItemGroup());
             dicGroups.Add("Content", new ItemGroup());
             dicGroups.Add("PublishFile", new ItemGroup());
@@ -58,8 +60,6 @@ namespace QuickPublish.CsProject
         public void SaveToXml(XmlElement nodeProject, string basePath)
         {
             XmlDocument xmldoc = nodeProject.OwnerDocument;
-            XmlElement elemOthers = xmldoc.CreateElement("ItemGroup", Consts.NamesapceURI);
-
             foreach (ItemGroup group in dicGroups.Values)
             {
                 if (group.Count < 1)
@@ -81,11 +81,15 @@ namespace QuickPublish.CsProject
 
                 nodeProject.AppendChild(elemGroup);
             }
-            foreach (XmlNode node in itemGroupOthers)
+            if (itemGroupOthers.Count > 0)
             {
-                elemOthers.AppendChild(xmldoc.ImportNode(node, true));
+                XmlElement elemOthers = xmldoc.CreateElement("ItemGroup", Consts.NamesapceURI);
+                foreach (XmlNode node in itemGroupOthers)
+                {
+                    elemOthers.AppendChild(xmldoc.ImportNode(node, true));
+                }
+                nodeProject.AppendChild(elemOthers);
             }
-            nodeProject.AppendChild(elemOthers);
         }
     }
 }

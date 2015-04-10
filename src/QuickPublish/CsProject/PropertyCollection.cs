@@ -71,6 +71,7 @@ namespace QuickPublish.CsProject
             //ClickOnce 签名
             defaultGroup.Add("SignManifests", "false", "false");
             defaultGroup.Add("ManifestCertificateThumbprint", "", "");
+            defaultGroup.Add("ManifestTimestampUrl", "", "");
             defaultGroup.Add("ManifestKeyFile", "", "");
 
             //程序集签名
@@ -112,7 +113,7 @@ namespace QuickPublish.CsProject
             defaultGroup.Add("ApplicationRevision", "", "0");
             defaultGroup.Add("ApplicationVersion", "", "1.0.0.%2a");
             defaultGroup.Add("UseApplicationTrust", "", "false");
-            //defaultGroup.Add("CreateDesktopShortcut", "false", "false");
+            defaultGroup.Add("CreateDesktopShortcut", "false", "false");
             //defaultGroup.Add("ExcludeDeploymentUrl", "false", "false");
             defaultGroup.Add("PublishWizardCompleted", "false", "false");
             defaultGroup.Add("BootstrapperEnabled", "", "true");
@@ -166,6 +167,23 @@ namespace QuickPublish.CsProject
             else
                 item.Value = value;
         }
+        /// <summary>
+        /// 注意：条件不支持查询，condition只使用整个表达式作为关键字
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void SetValue(string condition, string key, string value)
+        {
+            if (!dicGroups.ContainsKey(condition))
+                return;
+
+            PropertyGroup group = dicGroups[condition];
+            if (group.ContainsKey(key))
+                group[key].Value = value;
+            else
+                group.Items.Add(key, new Property(key, "", "", value));
+        }
         public bool GetBoolean(string key, bool defaultValue)
         {
             string strValue = this.GetValue(key, "");
@@ -212,8 +230,18 @@ namespace QuickPublish.CsProject
 
             foreach (XmlElement elem in elemGroup.ChildNodes)
             {
-                //如果是路径，则转换为全路径
-                string value = (RelPaths.Contains(elem.Name)) ? Common.GetAbsolutePath(basePath, elem.InnerText) : elem.InnerText;
+                string value = null;
+                if (RelPaths.Contains(elem.Name))
+                {//如果是路径，则转换为全路径
+                    if (string.IsNullOrEmpty(elem.InnerText))
+                        value = elem.InnerText;
+                    else
+                        value = Sense.Utils.IO.Path.GetAbsolutePath(basePath, elem.InnerText);
+                }
+                else
+                {
+                    value = elem.InnerText;
+                }
                 group.setProperty(elem.Name, elem.GetAttribute("Condition"), value);
             }
         }
@@ -238,7 +266,18 @@ namespace QuickPublish.CsProject
                     if (string.IsNullOrEmpty(property.Value))
                         continue;
                     //如果是路径，则转换为相对路径
-                    string value = (RelPaths.Contains(property.Key)) ? Common.GetRelativePath(basePath, property.Value) : property.Value;
+                    string value = null;
+                    if (RelPaths.Contains(property.Key))
+                    {
+                        if (string.IsNullOrEmpty(property.Value))
+                            value = property.Value;
+                        else
+                            value = Sense.Utils.IO.Path.GetRelativePath(basePath, property.Value);
+                    }
+                    else
+                    {
+                        value = property.Value;
+                    }
                     //如果是默认值，则无需保存
                     if (property.DefaultValue == value)
                         continue;
