@@ -118,18 +118,14 @@ namespace QuickPublish
                 this.Text = this.FormTitle;
 
                 tsbSave.Enabled = false;
-                tsbUpdateDist.Enabled = false;
                 tsbPublish.Enabled = false;
-                tsbPublishWizard.Enabled = false;
             }
             else
             {
                 this.Text = Path.GetFileName(document.FileName) + " - " + this.FormTitle;
 
                 tsbSave.Enabled = true;
-                tsbUpdateDist.Enabled = true;
                 tsbPublish.Enabled = true;
-                tsbPublishWizard.Enabled = true;
             }
         }
 

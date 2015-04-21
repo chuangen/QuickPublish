@@ -26,6 +26,14 @@ namespace QuickPublish
             Form form = null;
             switch (options.Trim().ToLower())
             {
+                case "/update":
+                    string fileName = System.IO.Path.Combine(Application.StartupPath, settingsFile);
+                    ClickOnceConfigFile document = new ClickOnceConfigFile(fileName);
+                    document.RefreshPublishFiles();
+                    //项目文件
+                    document.WriteXml(document.FileName);
+                    Console.WriteLine("/update 成功更新。");
+                    return;
                 case "/build":
                     form = new BuildForm(settingsFile);
                     break;

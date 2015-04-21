@@ -51,6 +51,7 @@
             this.txtAssemblyName = new System.Windows.Forms.TextBox();
             this.pagePublish = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.numApplicationRevision = new System.Windows.Forms.NumericUpDown();
             this.chkEnableApplicationRevision = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.txtApplicationVersionBuild = new System.Windows.Forms.TextBox();
@@ -77,24 +78,20 @@
             this.tsbOpen = new System.Windows.Forms.ToolStripButton();
             this.tsbSave = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.tsbUpdateDist = new System.Windows.Forms.ToolStripButton();
             this.tsbExportToCSProject = new System.Windows.Forms.ToolStripButton();
-            this.tsbPublishWizard = new System.Windows.Forms.ToolStripButton();
             this.tsbPublish = new System.Windows.Forms.ToolStripButton();
-            this.tsbOptions = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbHelp = new System.Windows.Forms.ToolStripButton();
-            this.numApplicationRevision = new System.Windows.Forms.NumericUpDown();
             label1 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.pageNormal.SuspendLayout();
             this.pageAssembly.SuspendLayout();
             this.pagePublish.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numApplicationRevision)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numApplicationRevision)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -108,9 +105,9 @@
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.pageNormal);
             this.tabControl1.Controls.Add(this.pageAssembly);
             this.tabControl1.Controls.Add(this.pagePublish);
@@ -313,8 +310,8 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.numApplicationRevision);
             this.groupBox3.Controls.Add(this.chkEnableApplicationRevision);
             this.groupBox3.Controls.Add(this.label6);
@@ -330,6 +327,13 @@
             this.groupBox3.TabIndex = 5;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "发布版本";
+            // 
+            // numApplicationRevision
+            // 
+            this.numApplicationRevision.Location = new System.Drawing.Point(287, 32);
+            this.numApplicationRevision.Name = "numApplicationRevision";
+            this.numApplicationRevision.Size = new System.Drawing.Size(82, 21);
+            this.numApplicationRevision.TabIndex = 11;
             // 
             // chkEnableApplicationRevision
             // 
@@ -400,8 +404,8 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.btnPublishOptions);
             this.groupBox2.Controls.Add(this.btnApplicationUpdate);
             this.groupBox2.Controls.Add(this.btnBootstrapper);
@@ -483,8 +487,8 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.txtInstallUrl);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.txtPublishUrl);
@@ -498,8 +502,8 @@
             // 
             // txtInstallUrl
             // 
-            this.txtInstallUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtInstallUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtInstallUrl.Location = new System.Drawing.Point(19, 88);
             this.txtInstallUrl.Name = "txtInstallUrl";
             this.txtInstallUrl.Size = new System.Drawing.Size(621, 21);
@@ -516,8 +520,8 @@
             // 
             // txtPublishUrl
             // 
-            this.txtPublishUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtPublishUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPublishUrl.Location = new System.Drawing.Point(19, 40);
             this.txtPublishUrl.Name = "txtPublishUrl";
             this.txtPublishUrl.Size = new System.Drawing.Size(621, 21);
@@ -550,11 +554,8 @@
             this.tsbOpen,
             this.tsbSave,
             this.toolStripSeparator,
-            this.tsbUpdateDist,
             this.tsbExportToCSProject,
-            this.tsbPublishWizard,
             this.tsbPublish,
-            this.tsbOptions,
             this.toolStripSeparator1,
             this.tsbHelp});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -593,14 +594,6 @@
             this.toolStripSeparator.Name = "toolStripSeparator";
             this.toolStripSeparator.Size = new System.Drawing.Size(6, 31);
             // 
-            // tsbUpdateDist
-            // 
-            this.tsbUpdateDist.Image = ((System.Drawing.Image)(resources.GetObject("tsbUpdateDist.Image")));
-            this.tsbUpdateDist.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbUpdateDist.Name = "tsbUpdateDist";
-            this.tsbUpdateDist.Size = new System.Drawing.Size(69, 28);
-            this.tsbUpdateDist.Text = "更新(&U)";
-            // 
             // tsbExportToCSProject
             // 
             this.tsbExportToCSProject.Image = ((System.Drawing.Image)(resources.GetObject("tsbExportToCSProject.Image")));
@@ -609,14 +602,6 @@
             this.tsbExportToCSProject.Size = new System.Drawing.Size(104, 28);
             this.tsbExportToCSProject.Text = "导出为C#项目";
             // 
-            // tsbPublishWizard
-            // 
-            this.tsbPublishWizard.Image = ((System.Drawing.Image)(resources.GetObject("tsbPublishWizard.Image")));
-            this.tsbPublishWizard.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbPublishWizard.Name = "tsbPublishWizard";
-            this.tsbPublishWizard.Size = new System.Drawing.Size(100, 28);
-            this.tsbPublishWizard.Text = "发布向导(&Z)...";
-            // 
             // tsbPublish
             // 
             this.tsbPublish.Image = ((System.Drawing.Image)(resources.GetObject("tsbPublish.Image")));
@@ -624,14 +609,6 @@
             this.tsbPublish.Name = "tsbPublish";
             this.tsbPublish.Size = new System.Drawing.Size(96, 28);
             this.tsbPublish.Text = "立即发布(&W)";
-            // 
-            // tsbOptions
-            // 
-            this.tsbOptions.Image = ((System.Drawing.Image)(resources.GetObject("tsbOptions.Image")));
-            this.tsbOptions.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbOptions.Name = "tsbOptions";
-            this.tsbOptions.Size = new System.Drawing.Size(67, 28);
-            this.tsbOptions.Text = "选项(&T)";
             // 
             // toolStripSeparator1
             // 
@@ -647,13 +624,6 @@
             this.tsbHelp.Name = "tsbHelp";
             this.tsbHelp.Size = new System.Drawing.Size(28, 28);
             this.tsbHelp.Text = "帮助(&L)";
-            // 
-            // numApplicationRevision
-            // 
-            this.numApplicationRevision.Location = new System.Drawing.Point(287, 32);
-            this.numApplicationRevision.Name = "numApplicationRevision";
-            this.numApplicationRevision.Size = new System.Drawing.Size(82, 21);
-            this.numApplicationRevision.TabIndex = 11;
             // 
             // MainForm
             // 
@@ -672,13 +642,13 @@
             this.pagePublish.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numApplicationRevision)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numApplicationRevision)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -726,11 +696,8 @@
         private System.Windows.Forms.ToolStripButton tsbOpen;
         private System.Windows.Forms.ToolStripButton tsbSave;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
-        private System.Windows.Forms.ToolStripButton tsbOptions;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton tsbHelp;
-        private System.Windows.Forms.ToolStripButton tsbUpdateDist;
-        private System.Windows.Forms.ToolStripButton tsbPublishWizard;
         private System.Windows.Forms.ToolStripButton tsbPublish;
         private System.Windows.Forms.ToolStripButton tsbExportToCSProject;
         private System.Windows.Forms.TabPage pageNormal;
