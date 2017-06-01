@@ -71,8 +71,8 @@ namespace QuickPublish.CsProject
                     if (item.GetType() == typeof(PublishFileItem))
                     {
                         PublishFileItem publishFile = (PublishFileItem)item;
-                        if (publishFile.IsDefault)//是默认值，则无需发布属性
-                            continue;
+                        //if (publishFile.IsDefault)//是默认值，则无需发布属性
+                        //    continue;
                     }
 
                     XmlElement elem = item.ToXml(xmldoc, basePath);

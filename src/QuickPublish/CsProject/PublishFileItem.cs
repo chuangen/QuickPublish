@@ -27,8 +27,13 @@ namespace QuickPublish.CsProject
         [StringValue("Exclude")]
         Exclude,
     }
-    public class PublishFileItem : FileItem
+    public class PublishFileItem : NodeBase
     {
+        public override string Key
+        {
+            get { return this.Include; }
+        }
+        public string Include { get; set; }
         public bool Visible {get; set;}
         /// <summary>
         /// 下载组
@@ -41,12 +46,16 @@ namespace QuickPublish.CsProject
         public bool IncludeHash {get; set;}
         public string FileType {get; set;}
 
-        internal PublishFileItem()
-            : base("PublishFile")
+
+        protected readonly string TagName = "PublishFile";
+        public PublishFileItem()
+            : this(null)
         { }
-        public PublishFileItem(string basePath, string include)
-            : base("PublishFile", basePath, include, "")
+
+        public PublishFileItem(string include)
         {
+            this.Include = include;
+
             this.Visible = false;
             this.Group = "";
             this.TargetPath = "";
@@ -71,9 +80,8 @@ namespace QuickPublish.CsProject
         }
         public override XmlElement ToXml(XmlDocument xmldoc, string basePath)
         {
-            string include = Sense.Utils.IO.Path.GetRelativePath(basePath, this.FullName);
             XmlElement result = xmldoc.CreateElement("PublishFile", Consts.NamesapceURI);
-            result.SetAttribute("Include", include);
+            result.SetAttribute("Include", this.Include);
 
             append(result, "Visible", this.Visible ? "true" : "false");
             append(result, "Group", this.Group);
@@ -104,9 +112,9 @@ namespace QuickPublish.CsProject
             }
         }
 
-        public static PublishFileItem fromXml(XmlElement elem, XmlNamespaceManager nsmgr, string basePath)
+        internal override void FromXmlInternal(XmlElement elem, XmlNamespaceManager nsmgr, string basePath)
         {
-            PublishFileItem result = new PublishFileItem(basePath, elem.GetAttribute("Include"));
+            this.Include = elem.GetAttribute("Include");
 
             bool boolValue;
             PublishState state;
@@ -115,29 +123,26 @@ namespace QuickPublish.CsProject
             selectedNode = elem.SelectSingleNode("k:Visible", nsmgr);
             string strVisible = (selectedNode == null) ? "" : selectedNode.InnerText;
             if (bool.TryParse(strVisible, out boolValue))
-                result.Visible = boolValue;
+                this.Visible = boolValue;
 
             selectedNode = elem.SelectSingleNode("k:Group", nsmgr);
-            result.Group = (selectedNode == null) ? "" : selectedNode.InnerText;
+            this.Group = (selectedNode == null) ? "" : selectedNode.InnerText;
 
             selectedNode = elem.SelectSingleNode("k:TargetPath", nsmgr);
-            result.TargetPath = (selectedNode == null) ? "" : selectedNode.InnerText;
+            this.TargetPath = (selectedNode == null) ? "" : selectedNode.InnerText;
 
             selectedNode = elem.SelectSingleNode("k:PublishState", nsmgr);
             string strPublishState = (selectedNode == null) ? "" : selectedNode.InnerText;
             if (TryParsePublishState(strPublishState, out state))
-                result.PublishState = state;
+                this.PublishState = state;
 
             selectedNode = elem.SelectSingleNode("k:IncludeHash", nsmgr);
             string strIncludeHash = (selectedNode == null) ? "" : selectedNode.InnerText;
             if (bool.TryParse(strVisible, out boolValue))
-                result.IncludeHash = boolValue;
+                this.IncludeHash = boolValue;
 
             selectedNode = elem.SelectSingleNode("k:FileType", nsmgr);
-            result.FileType = (selectedNode == null) ? "" : selectedNode.InnerText;
-
-            return result;
+            this.FileType = (selectedNode == null) ? "" : selectedNode.InnerText;
         }
-
     }
 }

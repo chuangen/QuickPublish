@@ -191,16 +191,28 @@ namespace QuickPublish
             getFileNames(fileNames, distPath);
 
             ItemGroup itemGroupContents = items.Groups["Content"];
+            ItemGroup itemGroupPublishFiles = items.Groups["PublishFile"];
             foreach (string file in fileNames)
             {
                 string fullName = Path.GetFullPath(file);
+                string include = Sense.Utils.IO.Path.GetRelativePath(basePath, fullName);
+                string link = Sense.Utils.IO.Path.GetRelativePath(distPath, fullName);
                 if (!itemGroupContents.ContainsKey(fullName))
                 {
-                    string include = Sense.Utils.IO.Path.GetRelativePath(basePath, fullName);
-                    string link = Sense.Utils.IO.Path.GetRelativePath(distPath, fullName);
                     ContentItem item = new ContentItem(basePath, include, link);
                     item.CopyToOutputDirectory = "PreserveNewest";
                     itemGroupContents.Add(item);
+                }
+                if (!itemGroupPublishFiles.ContainsKey(link))
+                {
+                    PublishFileItem item = new PublishFileItem(link);
+                    item.Visible = false;
+                    item.Group = "";
+                    item.TargetPath = "";
+                    item.PublishState = PublishState.Include;
+                    item.IncludeHash = true;
+                    item.FileType = "File";
+                    itemGroupPublishFiles.Add(item);
                 }
             }
             List<string> removes = new List<string>();
@@ -215,17 +227,32 @@ namespace QuickPublish
                     itemGroupContents.Remove(fullName);
             }
             removes.Clear();
+            foreach (string item in itemGroupPublishFiles.GetKeys())
+            {
+                bool found = false;
+                foreach(ContentItem contentItem in itemGroupContents)
+                {
+                    string include = null;
+                    if (contentItem.NeedLinkNode(basePath))
+                        include = contentItem.Link;
+                    else
+                        include = contentItem.GetInclude(basePath);
 
-            ItemGroup itemGroupPublishFiles = items.Groups["PublishFile"];
-            foreach (string fullName in itemGroupPublishFiles.GetKeys())
-            {
-                if (!fileNames.Contains(fullName))
-                    removes.Add(fullName);
+                    if(item == include)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found)
+                    continue;
+                removes.Add(item);
             }
-            foreach (string fullName in removes)
+            foreach (string item in removes)
             {
-                if (itemGroupPublishFiles.ContainsKey(fullName))
-                    itemGroupPublishFiles.Remove(fullName);
+                if (itemGroupPublishFiles.ContainsKey(item))
+                    itemGroupPublishFiles.Remove(item);
             }
         }
 
